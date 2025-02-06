@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kong-manager-ingress
+  namespace: kong-ns
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /kong-mmanager
+        pathType: Prefix
+        backend:
+          service:
+            name: kong-kong-manager
+            port:
+              number: 8445

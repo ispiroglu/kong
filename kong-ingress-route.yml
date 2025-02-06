@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: helloworld-ingress
+  namespace: kong-ns
+  annotations:
+    konghq.com/strip-path: "true"
+spec:
+  ingressClassName: kong
+  rules:
+  - http:
+      paths:
+      - path: /helloworld-prefix
+        pathType: Prefix
+        backend:
+          service:
+            name: helloworld-service
+            port:
+              number: 80
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongIngress
+metadata:
+  name: helloworld-kongingress
+  namespace: kong-ns
+proxy:
+  protocol: http
+route:
+  methods:
+  - GET

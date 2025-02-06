@@ -1,0 +1,44 @@
+ingressController:
+  enabled: true
+  tls:
+    enabled: true # Enable TLS for the Ingress Controller
+    secretName: kong-tls # Replace with your TLS secret name
+
+admin:
+  http:
+    enabled: false # Disable HTTP for the Admin API (recommended for production)
+  enabled: true
+  tls:
+    enabled: true # Enable TLS for the Admin API
+    nodePort: 32443
+
+
+
+env:
+    KONG_ADMIN_SERVICE_PORT: 32443
+
+manager:
+  enabled: true
+  http:
+    enabled: false # Disable HTTP for the Manager UI (recommended for production)
+  servicePort: 8443 # Change to HTTPS port
+  containerPort: 8443 # Change to HTTPS port
+  tls:
+    enabled: true # Enable TLS for the Manager UI service
+  ingress:
+    enabled: true
+    tls: true # Enable TLS for the Ingress
+    secretName: kong-tls # Replace with your TLS secret name
+    annotations:
+      kubernetes.io/ingress.class: kong # Adding the annotation
+    path: /kong-manager
+    pathType: Prefix
+
+  deploymentAnnotations:
+    "k8s.v1.cni.cncf.io/networks": kong-net
+    "sidecar.istio.io/inject": "false"
+    "konghq.com/admin-api-url": "https://192.168.49.2:30123" # Replace with your Minikube IP and NodePort
+
+image:
+  repository: kong/kong
+  pullPolicy: IfNotPresent
